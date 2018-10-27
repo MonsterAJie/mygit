@@ -1,8 +1,8 @@
 package com.jie;
 
 public class ThreadTest {
-	private static final long count = 10000l;
-
+	private static final long count = 10000000l;
+	//Test
 	public static void main(String[] args) throws InterruptedException {
 		concurrency();
 		serial();
