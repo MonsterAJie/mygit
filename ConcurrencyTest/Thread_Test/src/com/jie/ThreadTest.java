@@ -2,7 +2,7 @@ package com.jie;
 
 public class ThreadTest {
 	private static final long count = 10000000l;
-	//Test
+	//Test1
 	public static void main(String[] args) throws InterruptedException {
 		concurrency();
 		serial();
