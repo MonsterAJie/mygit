@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.w3c.dom.css.Counter;
 
 public class AtomManipulationTest {
-	
+	//AtomicBoolean¡¢AtomicLong
 	private AtomicInteger atomicI = new AtomicInteger(0);
 	
 	private int i = 0;
