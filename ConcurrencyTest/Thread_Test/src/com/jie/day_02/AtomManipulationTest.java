@@ -11,9 +11,7 @@ public class AtomManipulationTest {
 	private AtomicInteger atomicI = new AtomicInteger(0);
 	
 	private int i = 0;
-	/**
-	 * volatile保证可见性，不能保证原子性
-	 */
+
 	private volatile int j = 0;
 	
 	public static void main(String[] args) {
