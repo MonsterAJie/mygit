@@ -1,4 +1,4 @@
-package com.jie.day_02;
+package com.jie.part2;
 
 import java.util.ArrayList;
 import java.util.List;

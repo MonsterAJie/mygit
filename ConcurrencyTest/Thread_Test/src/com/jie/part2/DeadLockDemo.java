@@ -1,4 +1,4 @@
-package com.jie.day_01;
+package com.jie.part2;
 
 public class DeadLockDemo {
 	private static String A = "A";

@@ -1,4 +1,4 @@
-package com.jie.day_01;
+package com.jie.part2;
 
 public class ThreadTest {
 	private static final long count = 10000l;

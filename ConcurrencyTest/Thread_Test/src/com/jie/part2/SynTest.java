@@ -1,4 +1,4 @@
-package com.jie.day_02;
+package com.jie.part2;
 
 public class SynTest {
 	
