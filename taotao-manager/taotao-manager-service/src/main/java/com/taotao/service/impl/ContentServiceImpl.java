@@ -2,6 +2,7 @@ package com.taotao.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +16,6 @@ import com.taotao.common.utils.HttpClientUtil;
 import com.taotao.mapper.TbContentMapper;
 import com.taotao.pojo.TbContent;
 import com.taotao.pojo.TbContentExample;
-import com.taotao.pojo.TbItem;
-import com.taotao.pojo.TbItemExample;
 import com.taotao.pojo.TbContentExample.Criteria;
 import com.taotao.service.ContentService;
 
@@ -42,14 +41,25 @@ public class ContentServiceImpl implements ContentService {
 		content.setCreated(new Date());
 		content.setUpdated(new Date());
 		contentMapper.insert(content);
-		
 		//添加缓存同步逻辑
 		try {
 			HttpClientUtil.doGet(REST_BASE_URL + REST_CONTENT_SYNC_URL + content.getCategoryId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		return TaotaoResult.ok();
+	}
+	
+	@Override
+	public TaotaoResult updateContent(TbContent content) {
+		content.setUpdated(new Date());
+		contentMapper.updateByPrimaryKey(content);
+		//添加缓存同步逻辑
+		try {
+			HttpClientUtil.doGet(REST_BASE_URL + REST_CONTENT_SYNC_URL + content.getCategoryId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return TaotaoResult.ok();
 	}
 
@@ -70,6 +80,20 @@ public class ContentServiceImpl implements ContentService {
 		PageInfo<TbContent> pageInfo = new PageInfo<>(list);
 		result.setTotal(pageInfo.getTotal());
 		return result;
+	}
+	
+	@Override
+	public TaotaoResult deleteContent(String ids) {
+		TbContentExample example = new TbContentExample();
+		Criteria criteria = example.createCriteria();
+		List<Long> list = new ArrayList<Long>();
+		String[] idsList = ids.split(",");
+		for (int i = 0; i < idsList.length; i ++) {
+			list.add(Long.valueOf(idsList[i]));
+		}
+		criteria.andIdIn(list);
+		contentMapper.deleteByExample(example);
+		return TaotaoResult.ok();
 	}
 
 }
