@@ -21,11 +21,7 @@ import com.taotao.sso.service.UserService;
 /**
  * 用户Controller
  * <p>Title: UserController</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月14日上午10:52:43
- * @version 1.0
+
  */
 @Controller
 @RequestMapping("/user")

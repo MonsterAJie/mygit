@@ -1,25 +1,29 @@
 package com.taotao.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.pojo.EUDataGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.HttpClientUtil;
 import com.taotao.mapper.TbContentMapper;
 import com.taotao.pojo.TbContent;
+import com.taotao.pojo.TbContentExample;
+import com.taotao.pojo.TbItem;
+import com.taotao.pojo.TbItemExample;
+import com.taotao.pojo.TbContentExample.Criteria;
 import com.taotao.service.ContentService;
 
 /**
  * 内容管理
  * <p>Title: ContentServiceImpl</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月8日上午11:09:53
- * @version 1.0
+
  */
 @Service
 public class ContentServiceImpl implements ContentService {
@@ -47,6 +51,25 @@ public class ContentServiceImpl implements ContentService {
 		}
 		
 		return TaotaoResult.ok();
+	}
+
+
+	@Override
+	public EUDataGridResult selectContentList(Long categoryId, Integer page, Integer rows) {
+		TbContentExample example = new TbContentExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andCategoryIdEqualTo(categoryId);
+		List<TbContent> list = contentMapper.selectByExample(example);
+		//查询商品列表
+		//分页处理
+		PageHelper.startPage(page, rows);
+		//创建一个返回值对象
+		EUDataGridResult result = new EUDataGridResult();
+		result.setRows(list);
+		//取记录总条数
+		PageInfo<TbContent> pageInfo = new PageInfo<>(list);
+		result.setTotal(pageInfo.getTotal());
+		return result;
 	}
 
 }

@@ -21,11 +21,7 @@ import com.taotao.pojo.TbOrderShipping;
 /**
  * 订单管理Service
  * <p>Title: OrderServiceImpl</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月16日上午10:00:48
- * @version 1.0
+
  */
 @Service
 public class OrderServiceImpl implements OrderService {

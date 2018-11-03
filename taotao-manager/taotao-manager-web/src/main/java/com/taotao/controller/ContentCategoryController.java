@@ -14,12 +14,7 @@ import com.taotao.service.ContentCategoryService;
 
 /**
  * 内容分类管理
- * <p>Title: ContentCategoryController</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月8日上午9:23:41
- * @version 1.0
+
  */
 @Controller
 @RequestMapping("/content/category")

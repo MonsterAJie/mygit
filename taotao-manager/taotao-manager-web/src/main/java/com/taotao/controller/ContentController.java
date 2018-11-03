@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.taotao.common.pojo.EUDataGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbContent;
 import com.taotao.service.ContentService;
@@ -12,11 +13,7 @@ import com.taotao.service.ContentService;
 /**
  * 内容管理Controller
  * <p>Title: ContentController</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月8日上午11:13:52
- * @version 1.0
+
  */
 @Controller
 @RequestMapping("/content")
@@ -29,6 +26,13 @@ public class ContentController {
 	@ResponseBody
 	public TaotaoResult insertContent(TbContent content) {
 		TaotaoResult result = contentService.insertContent(content);
+		return result;
+	}
+	
+	@RequestMapping("/query/list")
+	@ResponseBody
+	public EUDataGridResult selectContentList(Long categoryId,Integer page, Integer rows) {
+		EUDataGridResult result = contentService.selectContentList(categoryId, page, rows);
 		return result;
 	}
 }

@@ -16,11 +16,7 @@ import com.taotao.service.ItemParamService;
 /**
  * 商品规格参数模板管理
  * <p>Title: ItemParamServiceImpl</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月5日下午2:36:57
- * @version 1.0
+
  */
 @Service
 public class ItemParamServiceImpl implements ItemParamService {

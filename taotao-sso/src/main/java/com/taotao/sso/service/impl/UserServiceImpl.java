@@ -26,11 +26,7 @@ import com.taotao.sso.service.UserService;
 /**
  * 用户管理Service
  * <p>Title: UserServiceImpl</p>
- * <p>Description: </p>
- * <p>Company: www.itcast.com</p> 
- * @author	入云龙
- * @date	2015年9月14日上午10:28:39
- * @version 1.0
+
  */
 @Service
 public class UserServiceImpl implements UserService {
