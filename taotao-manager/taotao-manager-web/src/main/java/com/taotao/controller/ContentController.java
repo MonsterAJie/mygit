@@ -35,11 +35,4 @@ public class ContentController {
 		EUDataGridResult result = contentService.selectContentList(categoryId, page, rows);
 		return result;
 	}
-	
-	@RequestMapping("/delete")
-	@ResponseBody
-	public TaotaoResult deleteContent(String ids) {
-		TaotaoResult result = contentService.deleteContent(ids);
-		return result;
-	}
 }

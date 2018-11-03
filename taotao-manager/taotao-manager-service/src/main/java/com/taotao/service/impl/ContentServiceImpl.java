@@ -1,6 +1,5 @@
 package com.taotao.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -71,21 +70,6 @@ public class ContentServiceImpl implements ContentService {
 		PageInfo<TbContent> pageInfo = new PageInfo<>(list);
 		result.setTotal(pageInfo.getTotal());
 		return result;
-	}
-
-
-	@Override
-	public TaotaoResult deleteContent(String ids) {
-		TbContentExample example = new TbContentExample();
-		Criteria criteria = example.createCriteria();
-		List<Long> list = new ArrayList<Long>();
-		String[] idsList = ids.split(",");
-		for (int i = 0; i < idsList.length; i ++) {
-			list.add(Long.valueOf(idsList[i]));
-		}
-		criteria.andIdIn(list);
-		contentMapper.deleteByExample(example);
-		return TaotaoResult.ok();
 	}
 
 }
