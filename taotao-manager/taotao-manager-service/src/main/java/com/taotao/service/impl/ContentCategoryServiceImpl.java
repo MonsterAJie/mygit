@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ import com.taotao.service.ContentCategoryService;
 @Service
 public class ContentCategoryServiceImpl implements ContentCategoryService {
 
+	private Logger logger = Logger.getLogger(ContentCategoryServiceImpl.class);
+	
 	@Autowired
 	private TbContentCategoryMapper contentCategoryMapper;
 	@Override
@@ -45,6 +48,7 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		}
 		return resultList;
 	}
+	
 	@Override
 	public TaotaoResult insertContentCategory(long parentId, String name) {
 		
@@ -71,5 +75,22 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		//返回结果
 		return TaotaoResult.ok(contentCategory);
 	}
-
+	
+	@Override
+	public TaotaoResult updateContentCategory(long id, String name) {
+//		TbContentCategory
+		//根据id查询该节点
+		TbContentCategoryExample example = new TbContentCategoryExample();
+		TbContentCategory contentCategory = new TbContentCategory();
+		Criteria criteria = example.createCriteria();
+		criteria.andIdEqualTo(id);
+		contentCategory = contentCategoryMapper.selectByPrimaryKey(id);
+		contentCategory.setName(name);
+		contentCategory.setUpdated(new Date());	
+		logger.debug("修改日期和名称");
+		//修改名称和时间
+		contentCategoryMapper.updateByExample(contentCategory, example);
+//		List<EUTreeNode> resultList = new ArrayList<>();
+		return  TaotaoResult.ok();
+	}
 }

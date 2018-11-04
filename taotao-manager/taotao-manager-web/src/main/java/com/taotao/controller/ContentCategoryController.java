@@ -36,4 +36,11 @@ public class ContentCategoryController {
 		TaotaoResult result = contentCategoryService.insertContentCategory(parentId, name);
 		return result;
 	}
+	
+	@RequestMapping("/update")
+	@ResponseBody
+	public TaotaoResult updateContentCategory(Long id, String name) {
+		TaotaoResult result = contentCategoryService.updateContentCategory(id, name);
+		return result;
+	}
 }
