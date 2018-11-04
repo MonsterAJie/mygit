@@ -115,9 +115,10 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		List<TbContentCategory> parentContentCatogory = contentCategoryMapper.selectByExample(example);
 		logger.debug("--------------删除内容分类管理节点------判断父节点下是否有子节点--");
 		if (parentContentCatogory.size() > 0) {
-			logger.debug("--------------删除内容分类管理节点-----改变父节点属性不变----");
+			logger.debug("--------------删除内容分类管理节点-----父节点属性不变----");
 		} else {
 			logger.debug("--------------删除内容分类管理节点-----改变父节点属性-------");
+			contentCategory = contentCategoryMapper.selectByPrimaryKey(parentId);
 			contentCategory.setIsParent(false);
 			contentCategory.setUpdated(new Date());
 			contentCategoryMapper.updateByPrimaryKey(contentCategory);
