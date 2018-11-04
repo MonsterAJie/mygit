@@ -47,4 +47,11 @@ public class ItemParamController {
 		EUDataGridResult result = itemParamService.getItemParamList(page, rows);
 		return result;
 	}
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public TaotaoResult deleteItemParam(String ids) {
+		TaotaoResult result = itemParamService.deleteItemParam(ids);
+		return result.ok();
+	}
 }

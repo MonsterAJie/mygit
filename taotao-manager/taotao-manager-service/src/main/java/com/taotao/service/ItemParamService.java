@@ -9,4 +9,5 @@ public interface ItemParamService {
 	TaotaoResult getItemParamByCid(long cid);
 	TaotaoResult insertItemParam(TbItemParam itemParam);
 	EUDataGridResult getItemParamList(int page, int rows);
+	TaotaoResult deleteItemParam(String ids);
 }

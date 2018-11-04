@@ -1,5 +1,6 @@
 package com.taotao.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,6 +67,20 @@ public class ItemParamServiceImpl implements ItemParamService {
 		PageInfo<TbItemParam> pageInfo = new PageInfo<>(list);
 		result.setTotal(pageInfo.getTotal());
 		return result;
+	}
+
+	@Override
+	public TaotaoResult deleteItemParam(String ids) {
+		TbItemParamExample example = new TbItemParamExample();
+		Criteria criteria = example.createCriteria();
+		List<Long> list = new ArrayList<Long>();
+		String[] str = ids.split(",");
+		for (int i = 0; i < str.length; i ++) {
+			list.add(Long.valueOf(str[i]));
+		}
+		criteria.andIdIn(list);
+		itemParamMapper.deleteByExample(example);
+		return TaotaoResult.ok();
 	}
 
 }
