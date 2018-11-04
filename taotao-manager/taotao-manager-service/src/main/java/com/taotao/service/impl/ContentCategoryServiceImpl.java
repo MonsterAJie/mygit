@@ -98,11 +98,30 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		TbContentCategoryExample example = new TbContentCategoryExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andIdEqualTo(id);
-		logger.debug("--------------删除内容分类管理节点添加或条件------------");
+		//找到该节点的父节点，判断父节点下是否有其他的节点，有：不处理，没有：将父节点标志至为0
+		logger.debug("--------------删除内容分类管理节点-----得到父节点信息-------");
+		TbContentCategory contentCategory = contentCategoryMapper.selectByPrimaryKey(id);
+		Long parentId = contentCategory.getParentId();
+		logger.debug("--------------删除内容分类管理节点添加或条件---------------");
 		Criteria criteria2 = example.createCriteria();
 		criteria2.andParentIdEqualTo(id);
-		example.or(criteria2);
+		example.or(criteria2);		
+		logger.debug("--------------删除内容分类管理节点---------------------");
 		contentCategoryMapper.deleteByExample(example);
+		example.clear();
+		logger.debug("--------------删除内容分类管理节点------改变查询条件-------");
+		Criteria criteria3 = example.createCriteria();
+		criteria3.andParentIdEqualTo(parentId);
+		List<TbContentCategory> parentContentCatogory = contentCategoryMapper.selectByExample(example);
+		logger.debug("--------------删除内容分类管理节点------判断父节点下是否有子节点--");
+		if (parentContentCatogory.size() > 0) {
+			logger.debug("--------------删除内容分类管理节点-----改变父节点属性不变----");
+		} else {
+			logger.debug("--------------删除内容分类管理节点-----改变父节点属性-------");
+			contentCategory.setIsParent(false);
+			contentCategory.setUpdated(new Date());
+			contentCategoryMapper.updateByPrimaryKey(contentCategory);
+		}
 		return TaotaoResult.ok();
 	}
 }
