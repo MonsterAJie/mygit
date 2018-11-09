@@ -1,8 +1,11 @@
 package com.taotao.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import com.taotao.common.pojo.EUDataGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.IDUtils;
+import com.taotao.common.utils.StringToListLong;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.mapper.TbItemParamItemMapper;
@@ -30,6 +34,8 @@ import com.taotao.service.ItemService;
 @Service
 public class ItemServiceImpl implements ItemService {
 
+	private final static Logger logger = Logger.getLogger(ItemServiceImpl.class);
+	
 	@Autowired
 	private TbItemMapper itemMapper;
 	
@@ -139,11 +145,71 @@ public class ItemServiceImpl implements ItemService {
 		itemParamItemMapper.insert(itemParamItem);
 		return TaotaoResult.ok();
 	}
-
+	
+	/**
+	 * 
+	 * <p>Title: getItemDescById</p>   
+	 * <p>Description: </p>   
+	 * @param itemId
+	 * @return   得到商品描述信息
+	 * @see com.taotao.service.ItemService#getItemDescById(java.lang.Long)
+	 */
 	@Override
 	public TaotaoResult getItemDescById(Long itemId) {
 		TbItemDesc itemDesc = itemDescMapper.selectByPrimaryKey(itemId);
 		return TaotaoResult.ok(itemDesc);
+	}
+
+	@Override
+	public TaotaoResult deleteItemById(String ids) {
+		TbItemExample tbItemExample = new TbItemExample();
+		Criteria criteria = tbItemExample.createCriteria();
+		String[] strList = ids.split(",");
+		List<Long> list = new ArrayList<Long>();
+		for (int i = 0; i < strList.length; i ++) {
+			list.add(Long.valueOf(strList[i]));
+		}
+		criteria.andIdIn(list);
+		itemMapper.deleteByExample(tbItemExample);
+		return TaotaoResult.ok();
+	}
+
+	@Override
+	public TaotaoResult instockItemByIds(String ids) {
+		TbItemExample tbItemExample = new TbItemExample();
+		Criteria criteria = tbItemExample.createCriteria();
+		List<Long> list = StringToListLong.stringToListLong(ids);
+		criteria.andIdIn(list);
+		logger.debug("------------使用ids得到item列表信息---------------");
+		List<TbItem> itemList = itemMapper.selectByExample(tbItemExample);
+		logger.debug("------------修改item列表信息---------------");
+		for (int i = 0; i < itemList.size(); i ++) {
+			TbItem item = itemList.get(i);
+			item.setStatus((byte) 2);
+			item.setUpdated(new Date());
+			logger.debug("------------更新数据库item信息---------------");
+			itemMapper.updateByPrimaryKey(item);
+		}
+		return TaotaoResult.ok();
+	}
+
+	@Override
+	public TaotaoResult reshelfItemByIds(String ids) {
+		TbItemExample tbItemExample = new TbItemExample();
+		Criteria criteria = tbItemExample.createCriteria();
+		List<Long> list = StringToListLong.stringToListLong(ids);
+		criteria.andIdIn(list);
+		logger.debug("------------使用ids得到item列表信息---------------");
+		List<TbItem> itemList = itemMapper.selectByExample(tbItemExample);
+		logger.debug("------------修改item列表信息---------------");
+		for (int i = 0; i < itemList.size(); i ++) {
+			TbItem item = itemList.get(i);
+			item.setStatus((byte) 1);
+			item.setUpdated(new Date());
+			logger.debug("------------更新数据库item信息---------------");
+			itemMapper.updateByPrimaryKey(item);
+		}
+		return TaotaoResult.ok();
 	}
 
 }

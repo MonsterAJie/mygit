@@ -76,7 +76,8 @@ var contentEditPage = {
 			});
 		},
 		clearForm : function(){
-			
+			$('#contentEditForm').form('reset');
+			contentEditEditor.html('');
 		}
 };
 

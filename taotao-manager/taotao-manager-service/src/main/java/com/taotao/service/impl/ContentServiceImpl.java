@@ -72,7 +72,7 @@ public class ContentServiceImpl implements ContentService {
 		TbContentExample example = new TbContentExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andCategoryIdEqualTo(categoryId);
-		List<TbContent> list = contentMapper.selectByExample(example);
+		List<TbContent> list = contentMapper.selectByExampleWithBLOBs(example);
 		//查询商品列表
 		//分页处理
 		PageHelper.startPage(page, rows);

@@ -10,4 +10,7 @@ public interface ItemService {
 	EUDataGridResult getItemList(int page, int rows);
 	TaotaoResult createItem(TbItem item, String desc, String itemParam) throws Exception;
 	TaotaoResult getItemDescById(Long itemId);
+	TaotaoResult deleteItemById(String itemId);
+	TaotaoResult instockItemByIds(String ids);
+	TaotaoResult reshelfItemByIds(String ids);
 }

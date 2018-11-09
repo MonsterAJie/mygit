@@ -63,4 +63,25 @@ public class ItemController {
 		TaotaoResult result = itemService.createItem(item, desc, itemParams);
 		return result;
 	}
+	
+	@RequestMapping("/item/delete")
+	@ResponseBody
+	public TaotaoResult deleteItemById(String ids) {
+		TaotaoResult result = itemService.deleteItemById(ids);
+		return result;
+	}
+	
+	@RequestMapping("/item/instock")
+	@ResponseBody
+	public TaotaoResult instockItemByIds(String ids) {
+		TaotaoResult result = itemService.instockItemByIds(ids);
+		return result;
+	}
+	
+	@RequestMapping("/item/reshelf")
+	@ResponseBody
+	public TaotaoResult reshelfItemByIds(String ids) {
+		TaotaoResult result = itemService.reshelfItemByIds(ids);
+		return result;
+	}
 }
