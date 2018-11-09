@@ -137,9 +137,13 @@ public class ItemServiceImpl implements ItemService {
 		itemParamItem.setUpdated(new Date());
 		//向表中插入数据
 		itemParamItemMapper.insert(itemParamItem);
-		
 		return TaotaoResult.ok();
-		
+	}
+
+	@Override
+	public TaotaoResult getItemDescById(Long itemId) {
+		TbItemDesc itemDesc = itemDescMapper.selectByPrimaryKey(itemId);
+		return TaotaoResult.ok(itemDesc);
 	}
 
 }

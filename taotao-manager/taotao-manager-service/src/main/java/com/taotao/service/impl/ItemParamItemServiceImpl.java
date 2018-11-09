@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.JsonUtils;
 import com.taotao.mapper.TbItemParamItemMapper;
 import com.taotao.pojo.TbItemParamItem;
@@ -59,6 +60,20 @@ public class ItemParamItemServiceImpl implements ItemParamItemService {
 		sb.append("    </tbody>\n");
 		sb.append("</table>");
 		return sb.toString();
+	}
+
+	@Override
+	public TaotaoResult getItemParamItemById(Long itemId) {
+		//根据商品id查询规格参数
+		TbItemParamItemExample example = new TbItemParamItemExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andItemIdEqualTo(itemId);
+		//执行查询
+		List<TbItemParamItem> list = itemParamItemMapper.selectByExampleWithBLOBs(example);
+		if (list == null || list.size() == 0) {
+			return TaotaoResult.ok();
+		}
+		return TaotaoResult.ok(list.get(0));
 	}
 
 }
