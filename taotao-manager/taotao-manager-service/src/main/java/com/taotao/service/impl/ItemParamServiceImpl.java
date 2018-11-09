@@ -40,7 +40,6 @@ public class ItemParamServiceImpl implements ItemParamService {
 		if (list != null && list.size() > 0) {
 			return TaotaoResult.ok(list.get(0));
 		}
-		
 		return TaotaoResult.ok();
 	}
 

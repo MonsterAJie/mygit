@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.taotao.common.pojo.EUDataGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbItem;
+import com.taotao.service.ItemParamItemService;
+import com.taotao.service.ItemParamService;
 import com.taotao.service.ItemService;
 
 /**
@@ -24,11 +26,28 @@ public class ItemController {
 	@Autowired
 	private ItemService itemService;
 	
+	@Autowired
+	private ItemParamItemService itemParamItemService;
+	
 	@RequestMapping("/item/{itemId}")
 	@ResponseBody
 	public TbItem getItemById(@PathVariable Long itemId) {
 		TbItem tbItem = itemService.getItemById(itemId);
 		return tbItem;
+	}
+	
+	@RequestMapping("/item/desc/{itemId}")
+	@ResponseBody
+	public TaotaoResult getItemDescById(@PathVariable Long itemId) {
+		TaotaoResult result = itemService.getItemDescById(itemId);
+		return result;
+	}
+	
+	@RequestMapping("/item/param/{itemId}")
+	@ResponseBody
+	public TaotaoResult getItemParamItemById(@PathVariable Long itemId) {
+		TaotaoResult result = itemParamItemService.getItemParamItemById(itemId);
+		return result;
 	}
 	
 	@RequestMapping("/item/list")

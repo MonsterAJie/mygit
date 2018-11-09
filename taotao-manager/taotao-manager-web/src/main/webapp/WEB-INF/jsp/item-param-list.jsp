@@ -49,7 +49,32 @@
         text:'编辑',
         iconCls:'icon-edit',
         handler:function(){
-        	$.messager.alert('提示','该功能未实现!');
+        	var ids = TT.getSelectionsIds("#itemParamList");
+        	if(ids.length == 0){
+        		$.messager.alert('提示','必须选择一个内容才能编辑!');
+        		return ;
+        	}
+        	if(ids.indexOf(',') > 0){
+        		$.messager.alert('提示','只能选择一个内容!');
+        		return ;
+        	}
+        	TAOTAO.createWindow({
+        		url : "/item-param-edit",
+    			onLoad : function(){
+    				var data = $("#itemParamList").datagrid("getSelections")[0];
+    				$("#contentEditForm").form("load",data);
+    				
+    				// 实现图片
+    				if(data.pic){
+    					$("#contentEditForm [name=pic]").after("<a href='"+data.pic+"' target='_blank'><img src='"+data.pic+"' width='80' height='50'/></a>");	
+    				}
+    				if(data.pic2){
+    					$("#contentEditForm [name=pic2]").after("<a href='"+data.pic2+"' target='_blank'><img src='"+data.pic2+"' width='80' height='50'/></a>");					
+    				}
+    				
+    				contentEditEditor.html(data.content);
+    			}
+        	});
         }
     },{
         text:'删除',
