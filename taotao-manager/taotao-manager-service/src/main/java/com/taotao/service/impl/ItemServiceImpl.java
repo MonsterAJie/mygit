@@ -1,6 +1,9 @@
 package com.taotao.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Base64.Encoder;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +16,10 @@ import com.alibaba.druid.sql.visitor.functions.Insert;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taotao.common.pojo.EUDataGridResult;
+import com.taotao.common.pojo.QbcItem;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.IDUtils;
-import com.taotao.common.utils.StringToListLong;
+import com.taotao.common.utils.StringUtils;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.mapper.TbItemParamItemMapper;
@@ -164,11 +168,7 @@ public class ItemServiceImpl implements ItemService {
 	public TaotaoResult deleteItemById(String ids) {
 		TbItemExample tbItemExample = new TbItemExample();
 		Criteria criteria = tbItemExample.createCriteria();
-		String[] strList = ids.split(",");
-		List<Long> list = new ArrayList<Long>();
-		for (int i = 0; i < strList.length; i ++) {
-			list.add(Long.valueOf(strList[i]));
-		}
+		List<Long> list = StringUtils.stringToListLong(ids, ",");
 		criteria.andIdIn(list);
 		itemMapper.deleteByExample(tbItemExample);
 		return TaotaoResult.ok();
@@ -178,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
 	public TaotaoResult instockItemByIds(String ids) {
 		TbItemExample tbItemExample = new TbItemExample();
 		Criteria criteria = tbItemExample.createCriteria();
-		List<Long> list = StringToListLong.stringToListLong(ids);
+		List<Long> list = StringUtils.stringToListLong(ids, ",");
 		criteria.andIdIn(list);
 		logger.debug("------------使用ids得到item列表信息---------------");
 		List<TbItem> itemList = itemMapper.selectByExample(tbItemExample);
@@ -197,7 +197,7 @@ public class ItemServiceImpl implements ItemService {
 	public TaotaoResult reshelfItemByIds(String ids) {
 		TbItemExample tbItemExample = new TbItemExample();
 		Criteria criteria = tbItemExample.createCriteria();
-		List<Long> list = StringToListLong.stringToListLong(ids);
+		List<Long> list = StringUtils.stringToListLong(ids, ",");
 		criteria.andIdIn(list);
 		logger.debug("------------使用ids得到item列表信息---------------");
 		List<TbItem> itemList = itemMapper.selectByExample(tbItemExample);
@@ -210,6 +210,46 @@ public class ItemServiceImpl implements ItemService {
 			itemMapper.updateByPrimaryKey(item);
 		}
 		return TaotaoResult.ok();
+	}
+
+	@Override
+	public EUDataGridResult getItemByQbc(QbcItem item, Integer page, Integer rows) {
+		logger.debug("----------商品信息模糊查询----------");
+		TbItemExample tbItemExample = new TbItemExample();
+		Criteria criteria1 = tbItemExample.createCriteria();
+		logger.debug("----------包装查询条件-------------");
+		if (item.getTitle() != null && !"".equals(item.getTitle())) {
+			String title = null;
+			try {
+				title = URLDecoder.decode(item.getTitle(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			criteria1.andTitleLike("%" + title + "%");
+		}
+		if (item.getSellPoint() != null && !"".equals(item.getSellPoint())) {
+			String sellPoint = null;
+			try {
+				sellPoint = URLDecoder.decode(item.getSellPoint(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			criteria1.andSellPointLike("%" + sellPoint + "%");
+		}
+		if (item.getPrice() != null && !"".equals(item.getPrice())) {
+			List<Long> list = StringUtils.stringToListLong(item.getPrice(), "-");
+			criteria1.andPriceBetween(list.get(0), list.get(1));
+		}
+		logger.debug("----------执行查询条件----------");
+		logger.debug("----------分页处理-------------");
+		PageHelper.startPage(page, rows);
+		List<TbItem> list = itemMapper.selectByExample(tbItemExample);
+		logger.debug("----------返回数据对象创建-------------");
+		EUDataGridResult result = new EUDataGridResult();
+		result.setRows(list);
+		PageInfo<TbItem> pageInfo = new PageInfo<>(list);
+		result.setTotal(pageInfo.getTotal());
+		return result;
 	}
 
 }

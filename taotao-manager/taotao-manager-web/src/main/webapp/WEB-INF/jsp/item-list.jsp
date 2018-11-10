@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <table class="easyui-datagrid" id="itemList" title="商品列表" 
-       data-options="singleSelect:false,collapsible:true,pagination:true,url:'/item/list',method:'get',pageSize:30,toolbar:toolbar">
+       data-options="singleSelect:false,
+				       collapsible:true,
+				       url:'/item/list',
+				       method:'get',
+				       pagination:true,
+				       pageSize:30,
+				       toolbar:toolbar">
     <thead>
         <tr>
         	<th data-options="field:'ck',checkbox:true"></th>
@@ -20,7 +27,44 @@
 <div id="itemEditWindow" class="easyui-window" title="编辑商品" data-options="modal:true,closed:true,iconCls:'icon-save',href:'/item-edit'" style="width:80%;height:80%;padding:10px;">
 </div>
 <script>
+	function search() {
+	    var json = {};
+	    json.title = $("#itemName").val();
+	    json.sellPoint = $("#itemSale").val();
+	    json.price = $("#price").val();
+		var arr = json.price.split("-");
+		var sear = new RegExp('-');
+		if (json.price != "") {
+			if(sear.test(json.price) && arr.length == 2){
+				
+			} else {
+				alert("金额格式错误，请修正！");
+				$("#price")[0].focus();
+				return;
+			}
 
+			for (var i = 0; i < arr.length; i ++) {
+				if (!$.isNumeric(arr[i])) {
+					alert("金额格式错误，请修正！");
+					$("#price")[0].focus();
+					return;
+				}
+			}
+		}
+
+	    $('#itemList').datagrid({
+	        url:'/item/qbc',
+	        queryParams:{
+	        	title: encodeURI($("#itemName").val()),
+	        	sellPoint: encodeURI($("#itemSale").val()),
+	        	price: encodeURI($("#price").val()),
+	        }
+	    });
+	    $("#itemName").attr("value",json.title);
+	    $("#itemSale").attr("value",json.sellPoint);
+	    $("#price").attr("value",json.price);
+	}
+	
     function getSelectionsIds(){
     	var itemList = $("#itemList");
     	var sels = itemList.datagrid("getSelections");
@@ -33,6 +77,15 @@
     }
     
     var toolbar = [{
+            text: '商品标题<input type="text" id="itemName"/>商品卖点<input type="text" id="itemSale"/>' 
+        }, {
+            text: '商品价格区间(-分隔)<input type="text" id="price"/>' 
+        }, {
+            text: '搜索', 
+            handler: function(){ 
+              search(); 
+            }
+    },{
         text:'新增',
         iconCls:'icon-add',
         handler:function(){
@@ -172,4 +225,5 @@
         	});
         }
     }];
+    
 </script>
