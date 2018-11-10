@@ -1,6 +1,9 @@
 package com.taotao.service;
 
+import java.util.List;
+
 import com.taotao.common.pojo.EUDataGridResult;
+import com.taotao.common.pojo.QbcItem;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbItem;
 
@@ -13,4 +16,5 @@ public interface ItemService {
 	TaotaoResult deleteItemById(String itemId);
 	TaotaoResult instockItemByIds(String ids);
 	TaotaoResult reshelfItemByIds(String ids);
+	EUDataGridResult getItemByQbc(QbcItem item, Integer page, Integer rows);
 }
