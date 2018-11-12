@@ -20,10 +20,10 @@ public class CodeServiceImpl implements CodeService{
 	private TbCodeMapper codeMapper;
 	
 	@Override
-	public List<Code> getPriceList() {
+	public List<Code> getPriceList(String name) {
 		TbCodeExample codeExample = new TbCodeExample();
 		Criteria criteria = codeExample.createCriteria();
-		criteria.andCodeEqualTo("price");
+		criteria.andCodeEqualTo(name);
 		List list = codeMapper.selectByExample(codeExample);
 		List<Code> list1 = ObjectUtils.ObjectExtractToObjects(list, new Code());
 		return list1;

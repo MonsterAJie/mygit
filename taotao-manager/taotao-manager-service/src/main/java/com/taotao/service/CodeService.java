@@ -6,5 +6,5 @@ import com.taotao.common.pojo.Code;
 import com.taotao.common.pojo.TaotaoResult;
 
 public interface CodeService {
-	List<Code> getPriceList();
+	List<Code> getPriceList(String name);
 }
