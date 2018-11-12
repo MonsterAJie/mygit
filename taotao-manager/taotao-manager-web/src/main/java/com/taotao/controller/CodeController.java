@@ -25,7 +25,7 @@ public class CodeController {
 	@RequestMapping("/price")
 	@ResponseBody
 	public List<Code> getPriceList(String name) {
-		List<Code> list = codeService.getPriceList();
+		List<Code> list = codeService.getPriceList(name);
 		String json = JsonUtils.objectToJson(list);
 		return list;
 	}
