@@ -5,7 +5,7 @@
 		<groupId>com.taotao</groupId>
 		<artifactId>taotao-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+	</parent> 
 	<groupId>com.taotao</groupId>
 	<artifactId>taotao-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
