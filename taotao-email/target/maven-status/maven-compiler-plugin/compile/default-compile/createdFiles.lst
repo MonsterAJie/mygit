@@ -1,0 +1,7 @@
+com\taotao\email\controller\PageController.class
+com\taotao\email\service\impl\MailServiceImpl.class
+com\taotao\email\utils\EmailUtils.class
+com\taotao\email\thread\EmailDealThread.class
+com\taotao\email\utils\AllBean.class
+com\taotao\email\listener\EmailMessageListener.class
+com\taotao\email\service\MailService.class

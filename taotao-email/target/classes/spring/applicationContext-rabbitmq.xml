@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	
+	<bean id="allBean" class="com.taotao.email.utils.AllBean"  />
+	
+    <context:property-placeholder location="classpath:resource/*.properties"/>
+    <!--连接工厂-->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" port="${rabbitmq.port}"></rabbit:connection-factory>
+    <!--RabbitAdmin主要用于创建队列和交换器以及绑定关系等。-->
+    <rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory"/>
+    <!--声明队列-->
+    <rabbit:queue name="activityQueue" durable="true" auto-delete="false"  />
+        
+    <bean id="EmailMessageListener" class="com.taotao.email.listener.EmailMessageListener"></bean>
+
+    <!-- 将两个队列加入监听容器中，每个队列的监听都对应一个监听器 -->
+    <rabbit:listener-container connection-factory="connectionFactory" concurrency= "8">
+        <rabbit:listener queues="activityQueue" ref="EmailMessageListener" method="onMessage"/>
+    </rabbit:listener-container>
+</beans>
