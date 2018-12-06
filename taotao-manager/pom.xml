@@ -5,7 +5,7 @@
 		<groupId>com.taotao</groupId>
 		<artifactId>taotao-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+	</parent> 
 	<groupId>com.taotao</groupId>
 	<artifactId>taotao-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -33,9 +33,6 @@
 				<configuration>
 					<port>8080</port>
 					<path>/</path>
-					<url>http://192.168.25.135:8080/manager/text</url>
-					<username>tomcat</username>
-					<password>tomcat</password>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+    <context:component-scan base-package="com.taotao.sso.service"></context:component-scan>
+    <context:property-placeholder location="classpath:resource/*.properties"/>
+    <!--连接工厂-->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" port="${rabbitmq.port}"></rabbit:connection-factory>
+    <!--RabbitAdmin主要用于创建队列和交换器以及绑定关系等。-->
+    <rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory"/>
+    <!--声明队列-->
+    <rabbit:queue name="activityQueue" durable="true" auto-delete="false"  />
+    <!--声明路由并绑定队列，指定routingKey
+    <rabbit:direct-exchange name="hap.log.exchange"  auto-delete="false" durable="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="rabbitmq_log_info" key="info"></rabbit:binding>
+            <rabbit:binding queue="rabbitmq_log_error" key="error"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>-->
+    
+    <!--配置topic类型exchange-->
+    <rabbit:topic-exchange name="activityExchange" auto-delete="false" durable="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="activityQueue" pattern="activity.#" ></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+    
+    
+    <!--定义RabbitTemplate，用于发送与接收消息-->
+    <rabbit:template id="rabbitTemplateEmail" connection-factory="connectionFactory" routing-key="activity" exchange="activityExchange" message-converter="jsonMessageConverter"></rabbit:template>
+
+    <!-- 消息对象json转换类 -->
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+</beans>

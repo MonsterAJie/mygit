@@ -1,5 +1,6 @@
 package com.taotao.sso.service.impl;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -7,12 +8,19 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.CookieUtils;
 import com.taotao.common.utils.JsonUtils;
@@ -30,7 +38,20 @@ import com.taotao.sso.service.UserService;
  */
 @Service
 public class UserServiceImpl implements UserService {
-
+	/**
+	 * log打印
+	 */
+	private Logger logger = Logger.getLogger(UserServiceImpl.class);
+	
+	/**
+	 * rabbitmq
+	 */
+	private static final String EXCHANGE_NAME = "topic_logs";
+	
+    @Autowired
+    @Qualifier("rabbitTemplateEmail")
+    public RabbitTemplate rabbitTemplateEmail;
+	
 	@Autowired
 	private TbUserMapper userMapper;
 	
@@ -70,10 +91,22 @@ public class UserServiceImpl implements UserService {
 	public TaotaoResult createUser(TbUser user) {
 		user.setUpdated(new Date());
 		user.setCreated(new Date());
+		user.setStatus(String.valueOf(0));
 		//md5加密
-		user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+		Base64 base64 = new Base64();
+		String md5Pass = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+		user.setPassword(md5Pass);
+		logger.debug("保存用户数据--------带激活信息----------");
+		user.setActcode(md5Pass);
+		logger.debug("保存用户数据--------带激活信息----------");
 		userMapper.insert(user);
-		return TaotaoResult.ok();
+		logger.debug("发送用户邮箱激活信息-----调用rabbitmq---------");
+		//将用户信息放到消息队列
+		logger.debug("用户激活连接信息获取--------base64编码格式----------");
+		String actinfo = base64.encodeToString(user.getId().toString().getBytes());
+		rabbitTemplateEmail.convertAndSend(actinfo);
+		//发送邮件
+		return TaotaoResult.ok("请到邮箱查收激活信息！");
 	}
 
 	/**
@@ -101,6 +134,9 @@ public class UserServiceImpl implements UserService {
 		//比对密码
 		if (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())) {
 			return TaotaoResult.build(400, "用户名或密码错误");
+		}
+		if (!user.getStatus().equals("1")) {
+			return TaotaoResult.build(400, "账号未激活，请进入注册邮箱激活");
 		}
 		//生成token
 		String token = UUID.randomUUID().toString();
@@ -132,5 +168,31 @@ public class UserServiceImpl implements UserService {
 		//返回用户信息
 		return TaotaoResult.ok(JsonUtils.jsonToPojo(json, TbUser.class));
 	}
+
+	@Override
+	public TaotaoResult userLogout(String token, HttpServletRequest request, HttpServletResponse response) {
+		jedisClient.del(REDIS_USER_SESSION_KEY + ":" + token);
+		CookieUtils.deleteCookie(request, response, "TT_TOKEN");
+		return TaotaoResult.ok();
+	}
+
+	@Override
+	public TaotaoResult userActivity(String id, String actcode) {
+		Base64 base = new Base64();
+		String ids = new String(base.decode(id));
+		String actcodes = new String(base.decode(actcode));
+		TbUser users = userMapper.selectByPrimaryKey(Long.valueOf(ids));
+		if (users.getActcode().equals(actcodes)) {
+			//激活标志置为1
+			users.setStatus("1");
+		}
+		userMapper.updateByPrimaryKey(users);
+		return TaotaoResult.ok();
+	}
+	
+	public static void main(String[] args) {
+//		rabbitTemplateLogInfo.convertAndSend("11111");
+	}
+
 
 }

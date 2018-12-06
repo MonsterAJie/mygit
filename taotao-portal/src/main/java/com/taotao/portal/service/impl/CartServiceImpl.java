@@ -125,14 +125,38 @@ public class CartServiceImpl implements CartService{
 				itemList.remove(cartItem);
 				break;
 			}
-				 
 		}
 		//把购物车列表重新写入cookie
 		CookieUtils.setCookie(request, response, "TT_CART", JsonUtils.objectToJson(itemList), true);
-		
 		return TaotaoResult.ok();
 	}
 	
+	/**
+	 * 根据手动输入的商品数量更改商品相关信息
+	 * <p>Title: updateCartItem</p>   
+	 * <p>Description: </p>   
+	 * @param itemId
+	 * @param num
+	 * @param request
+	 * @param response
+	 * @return   
+	 * @see com.taotao.portal.service.CartService#updateCartItem(java.lang.Long, java.lang.Integer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	public TaotaoResult updateCartItem(Long itemId, Integer num, HttpServletRequest request,
+			HttpServletResponse response) {
+		CartItem cartItem = null;
+		List<CartItem> itemList = getCartItemList(request);
+		for (CartItem cItem : itemList) {
+			if (cItem.getId() == itemId) {
+				cItem.setNum(num);
+				cartItem = cItem;
+				break;
+			}
+		}
+		//把购物车列表写入cookie
+		CookieUtils.setCookie(request, response, "TT_CART", JsonUtils.objectToJson(itemList), true);
+		return TaotaoResult.ok();
+	}
 	
-
 }

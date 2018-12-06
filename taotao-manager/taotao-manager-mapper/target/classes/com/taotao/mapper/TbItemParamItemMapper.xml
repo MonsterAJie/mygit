@@ -196,9 +196,7 @@
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map" >
     update tb_item_param_item
-    set id = #{record.id,jdbcType=BIGINT},
-      item_id = #{record.itemId,jdbcType=BIGINT},
-      created = #{record.created,jdbcType=TIMESTAMP},
+    set item_id = #{record.itemId,jdbcType=BIGINT},
       updated = #{record.updated,jdbcType=TIMESTAMP},
       param_data = #{record.paramData,jdbcType=LONGVARCHAR}
     <if test="_parameter != null" >

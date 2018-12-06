@@ -27,6 +27,19 @@ public class StringUtils {
 		}
 		return list;
 	}
+	
+	public static List<String> stringToListString (String str, String spp) {
+		String[] strList = str.split(spp);
+		List<String> list = new ArrayList<String>();
+		for (int i = 0; i < strList.length; i ++) {
+			if (isNumeric(strList[i])) {
+				list.add(strList[i]);
+			} else {
+				return new ArrayList<String>();
+			}
+		}
+		return list;
+	}
 	/**
 	 * 
 	 * @Title: isNumeric   

@@ -17,4 +17,5 @@ public interface ItemService {
 	TaotaoResult instockItemByIds(String ids);
 	TaotaoResult reshelfItemByIds(String ids);
 	EUDataGridResult getItemByQbc(QbcItem item, Integer page, Integer rows);
+	TaotaoResult updateItem(TbItem item, String desc, String itemParams) throws Exception;
 }

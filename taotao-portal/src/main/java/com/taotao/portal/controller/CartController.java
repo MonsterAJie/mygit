@@ -36,6 +36,14 @@ public class CartController {
 		return "redirect:/cart/success.html";
 	}
 	
+	@RequestMapping("/update/num/{itemId}")
+	public String updateCartItem(@PathVariable Long itemId, 
+			@RequestParam(defaultValue="1")Integer num, 
+			HttpServletRequest request, HttpServletResponse response) {
+		TaotaoResult result = cartService.updateCartItem(itemId, num, request, response);
+		return "redirect:/cart/success.html";
+	}
+	
 	@RequestMapping("/success")
 	public String showSuccess() {
 		return "cartSuccess";

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysql.jdbc.util.Base64Decoder;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.utils.ExceptionUtil;
 import com.taotao.pojo.TbUser;
@@ -102,6 +103,40 @@ public class UserController {
 		}
 	}
 	
+	//用户激活
+	@RequestMapping("/activity/{id}/{actcode}")
+	public String userActivity(@PathVariable String id, @PathVariable String actcode) {
+		try {
+			TaotaoResult result = userService.userActivity(id, actcode);
+			return "login";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	//用户注销
+	@RequestMapping(value="/logout/{token}")
+	@ResponseBody
+	public Object userLogout(@PathVariable String token, String callback,
+			HttpServletRequest request, HttpServletResponse response) {
+		TaotaoResult result = null;
+		try {
+			result = userService.userLogout(token, request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = TaotaoResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+		//判断是否为jsonp调用
+		if (StringUtils.isBlank(callback)) {
+			return result;
+		} else {
+			MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(result);
+			mappingJacksonValue.setJsonpFunction(callback);
+			return mappingJacksonValue;
+		}
+	}
+	
 	@RequestMapping("/token/{token}")
 	@ResponseBody
 	public Object getUserByToken(@PathVariable String token, String callback) {
@@ -112,7 +147,6 @@ public class UserController {
 			e.printStackTrace();
 			result = TaotaoResult.build(500, ExceptionUtil.getStackTrace(e));
 		}
-		
 		//判断是否为jsonp调用
 		if (StringUtils.isBlank(callback)) {
 			return result;
@@ -121,6 +155,5 @@ public class UserController {
 			mappingJacksonValue.setJsonpFunction(callback);
 			return mappingJacksonValue;
 		}
-		
 	}
 }

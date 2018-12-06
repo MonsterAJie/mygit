@@ -5,13 +5,12 @@ import java.io.FileInputStream;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.junit.Test;
 
 import com.taotao.common.utils.FtpUtil;
 
 public class FTPTest {
 
-	@Test
+//	@Test
 	public void testFtpClient() throws Exception {
 		//创建一个FtpClient对象
 		FTPClient ftpClient = new FTPClient();
@@ -34,7 +33,7 @@ public class FTPTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testFtpUtil() throws Exception {
 		FileInputStream inputStream = new FileInputStream(new File("D:\\Documents\\Pictures\\images\\2010101415583352_S.jpg"));
 		FtpUtil.uploadFile("192.168.25.133", 21, "ftpuser", "ftpuser", "/home/ftpuser/www/images", "/2015/09/04", "hello.jpg", inputStream);

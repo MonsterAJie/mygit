@@ -17,7 +17,7 @@ public class SolrJTest {
 	@Test
 	public void addDocument() throws Exception {
 		//创建一连接
-		SolrServer solrServer = new HttpSolrServer("http://192.168.25.154:8080/solr");
+		SolrServer solrServer = new HttpSolrServer("http://192.168.32.129:8080/solr");
 		//创建一个文档对象
 		SolrInputDocument document = new SolrInputDocument();
 		document.addField("id", "test001");
