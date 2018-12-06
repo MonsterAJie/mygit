@@ -1,6 +1,8 @@
 com\taotao\service\impl\ItemParamServiceImpl.class
 com\taotao\service\ItemService.class
+com\taotao\service\CodeService.class
 com\taotao\service\impl\ItemServiceImpl.class
+com\taotao\service\impl\CodeServiceImpl.class
 com\taotao\service\impl\PictureServiceImpl.class
 com\taotao\service\ItemParamItemService.class
 com\taotao\service\PictureService.class

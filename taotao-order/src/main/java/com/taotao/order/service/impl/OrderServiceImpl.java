@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.mapper.TbItemMapper;
 import com.taotao.mapper.TbOrderItemMapper;
 import com.taotao.mapper.TbOrderMapper;
 import com.taotao.mapper.TbOrderShippingMapper;
 import com.taotao.order.dao.JedisClient;
 import com.taotao.order.service.OrderService;
+import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbOrder;
 import com.taotao.pojo.TbOrderItem;
 import com.taotao.pojo.TbOrderShipping;
@@ -26,6 +28,9 @@ import com.taotao.pojo.TbOrderShipping;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+	
+	@Autowired
+	private TbItemMapper itemMapper;
 	@Autowired
 	private TbOrderMapper orderMapper;
 	@Autowired
@@ -72,6 +77,10 @@ public class OrderServiceImpl implements OrderService {
 			tbOrderItem.setOrderId(orderId + ""); 
 			//向订单明细插入记录
 			orderItemMapper.insert(tbOrderItem);
+			//减少商品数量
+//			TbItem item = itemMapper.selectByPrimaryKey(Long.valueOf(tbOrderItem.getItemId()));
+//			item.setNum(item.getNum() - tbOrderItem.getNum());
+//			itemMapper.updateByPrimaryKey(item);
 		}
 		//插入物流表
 		//补全物流表的属性
@@ -79,7 +88,6 @@ public class OrderServiceImpl implements OrderService {
 		orderShipping.setCreated(date);
 		orderShipping.setUpdated(date);
 		orderShippingMapper.insert(orderShipping);
-		
 		return TaotaoResult.ok(orderId);
 	}
 

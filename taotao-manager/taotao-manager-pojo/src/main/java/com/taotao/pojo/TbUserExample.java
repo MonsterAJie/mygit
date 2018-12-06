@@ -165,6 +165,146 @@ public class TbUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andStatusIsNull() {
+            addCriterion("status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNotNull() {
+            addCriterion("status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusEqualTo(String value) {
+            addCriterion("status =", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotEqualTo(String value) {
+            addCriterion("status <>", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThan(String value) {
+            addCriterion("status >", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("status >=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThan(String value) {
+            addCriterion("status <", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThanOrEqualTo(String value) {
+            addCriterion("status <=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLike(String value) {
+            addCriterion("status like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotLike(String value) {
+            addCriterion("status not like", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIn(List<String> values) {
+            addCriterion("status in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotIn(List<String> values) {
+            addCriterion("status not in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusBetween(String value1, String value2) {
+            addCriterion("status between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotBetween(String value1, String value2) {
+            addCriterion("status not between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeIsNull() {
+            addCriterion("actcode is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeIsNotNull() {
+            addCriterion("actcode is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeEqualTo(String value) {
+            addCriterion("actcode =", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeNotEqualTo(String value) {
+            addCriterion("actcode <>", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeGreaterThan(String value) {
+            addCriterion("actcode >", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeGreaterThanOrEqualTo(String value) {
+            addCriterion("actcode >=", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeLessThan(String value) {
+            addCriterion("actcode <", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeLessThanOrEqualTo(String value) {
+            addCriterion("actcode <=", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeLike(String value) {
+            addCriterion("actcode like", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeNotLike(String value) {
+            addCriterion("actcode not like", value, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeIn(List<String> values) {
+            addCriterion("actcode in", values, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeNotIn(List<String> values) {
+            addCriterion("actcode not in", values, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeBetween(String value1, String value2) {
+            addCriterion("actcode between", value1, value2, "actcode");
+            return (Criteria) this;
+        }
+
+        public Criteria andActcodeNotBetween(String value1, String value2) {
+            addCriterion("actcode not between", value1, value2, "actcode");
+            return (Criteria) this;
+        }
+
         public Criteria andUsernameIsNull() {
             addCriterion("username is null");
             return (Criteria) this;

@@ -88,6 +88,17 @@
 								id="phone_error"></label>
 						</div>
 					</div>
+					<div class="item" id="dpEmail">
+						<span class="label"><b class="ftx04">*</b>验证邮箱：</span>
+
+						<div class="fl item-ifo">
+							<input type="text" id="Email" maxlength="20" name="Email"
+								class="text" tabindex="5"
+								autocomplete="off" /> <i class="i-Email"></i> <label
+								id="phone_succeed" class="blank"></label> <label
+								id="phone_error"></label>
+						</div>
+					</div>
 					</div>
                 <div class="item item-new">
                     <span class="label">&nbsp;</span>
@@ -114,6 +125,14 @@
         </form>
     </div>
 <script type="text/javascript">
+	/*
+	 * 验证邮箱格式是否正确
+	 */
+	function validatorEmail(value){
+	    // 正则验证格式
+	    eval("var reg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;");
+	    return RegExp(reg).test(value);
+	}
 	var REGISTER={
 		param:{
 			//单点登录系统的url
@@ -136,6 +155,22 @@
 					$("#phone").focus();
 					return false;
 				}
+				//邮箱检查
+				if ($("#Email").val() == "") {
+					alert("邮箱不能为空！");
+					$("#Email").focus();
+					return false;
+				} else {
+					//校验邮箱格式
+			        if(validatorEmail($("#Email").val())){
+			            console.log("参数:符合验证要求");
+			        }else{
+						alert("邮箱格式不正确！");
+						$("#Email").focus();
+						return false;
+			        }
+				}
+				
 				//密码检查
 				if ($("#pwd").val() != $("#pwdRepeat").val()) {
 					alert("确认密码和密码不一致，请重新输入！");
@@ -174,8 +209,10 @@
 		doSubmit:function() {
 			$.post("/user/register",$("#personRegForm").serialize(), function(data){
 				if(data.status == 200){
-					alert('用户注册成功，请登录！');
-					REGISTER.login();
+					alert('用户注册成功，登录邮箱激活账号后可使用！');
+					//REGISTER.login();
+					//进入提示激活页面
+					REGISTER.activity();
 				} else {
 					alert("注册失败！");
 				}

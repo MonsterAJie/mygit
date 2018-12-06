@@ -21,9 +21,14 @@ var TTCart = {
 			});
 		});
 		$(".quantity-form .quantity-text").rnumber(1);//限制只能输入数字
-		$(".quantity-form .quantity-text").change(function(){
+		$(".quantity-form .quantity-text").bind('input propertychange keyup', function(){
 			var _thisInput = $(this);
-			$.post("/service/cart/update/num/"+_thisInput.attr("itemId")+"/"+_thisInput.val(),function(data){
+			if (eval(_thisInput.val()) == 0) {
+				$(".quantity-text").val("1");
+				TTCart.refreshTotalPrice();
+				return;
+			}
+			$.post("/cart/update/num/"+_thisInput.attr("itemId")+".html?num="+_thisInput.val(),function(data){
 				TTCart.refreshTotalPrice();
 			});
 		});

@@ -3,6 +3,8 @@
 <mapper namespace="com.taotao.mapper.TbUserMapper" >
   <resultMap id="BaseResultMap" type="com.taotao.pojo.TbUser" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="actcode" property="actcode" jdbcType="VARCHAR" />
     <result column="username" property="username" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
@@ -69,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, username, password, phone, email, created, updated
+    id, status, actcode, username, password, phone, email, created, updated
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.taotao.pojo.TbUserExample" >
     select
@@ -101,19 +103,30 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.taotao.pojo.TbUser" >
-    insert into tb_user (id, username, password, 
-      phone, email, created, 
-      updated)
-    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updated,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.taotao.pojo.TbUser">
+       <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+          SELECT LAST_INSERT_ID()
+      </selectKey>
+    insert into tb_user (id, status, actcode, 
+      username, password, phone, 
+      email, created, updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{actcode,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.taotao.pojo.TbUser" >
     insert into tb_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="actcode != null" >
+        actcode,
       </if>
       <if test="username != null" >
         username,
@@ -137,6 +150,12 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="actcode != null" >
+        #{actcode,jdbcType=VARCHAR},
       </if>
       <if test="username != null" >
         #{username,jdbcType=VARCHAR},
@@ -170,6 +189,12 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=BIGINT},
       </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.actcode != null" >
+        actcode = #{record.actcode,jdbcType=VARCHAR},
+      </if>
       <if test="record.username != null" >
         username = #{record.username,jdbcType=VARCHAR},
       </if>
@@ -196,6 +221,8 @@
   <update id="updateByExample" parameterType="map" >
     update tb_user
     set id = #{record.id,jdbcType=BIGINT},
+      status = #{record.status,jdbcType=VARCHAR},
+      actcode = #{record.actcode,jdbcType=VARCHAR},
       username = #{record.username,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
       phone = #{record.phone,jdbcType=VARCHAR},
@@ -209,6 +236,12 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.taotao.pojo.TbUser" >
     update tb_user
     <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="actcode != null" >
+        actcode = #{actcode,jdbcType=VARCHAR},
+      </if>
       <if test="username != null" >
         username = #{username,jdbcType=VARCHAR},
       </if>
@@ -232,7 +265,9 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.taotao.pojo.TbUser" >
     update tb_user
-    set username = #{username,jdbcType=VARCHAR},
+    set status = #{status,jdbcType=VARCHAR},
+      actcode = #{actcode,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},

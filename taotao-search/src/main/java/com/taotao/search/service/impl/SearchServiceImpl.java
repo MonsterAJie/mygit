@@ -44,7 +44,6 @@ public class SearchServiceImpl implements SearchService {
 		}
 		searchResult.setPageCount(pageCount);
 		searchResult.setCurPage(page);
-		
 		return searchResult;
 	}
 

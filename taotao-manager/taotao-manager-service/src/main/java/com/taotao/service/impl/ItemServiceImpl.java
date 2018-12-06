@@ -7,9 +7,11 @@ import java.util.Base64.Encoder;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.sql.visitor.functions.Insert;
@@ -18,16 +20,20 @@ import com.github.pagehelper.PageInfo;
 import com.taotao.common.pojo.EUDataGridResult;
 import com.taotao.common.pojo.QbcItem;
 import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.common.utils.HttpClientUtil;
 import com.taotao.common.utils.IDUtils;
+import com.taotao.common.utils.JsonUtils;
 import com.taotao.common.utils.StringUtils;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.mapper.TbItemParamItemMapper;
 import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemDescExample;
 import com.taotao.pojo.TbItemExample;
 import com.taotao.pojo.TbItemExample.Criteria;
 import com.taotao.pojo.TbItemParamItem;
+import com.taotao.pojo.TbItemParamItemExample;
 import com.taotao.service.ItemService;
 
 /**
@@ -39,6 +45,15 @@ import com.taotao.service.ItemService;
 public class ItemServiceImpl implements ItemService {
 
 	private final static Logger logger = Logger.getLogger(ItemServiceImpl.class);
+	
+	@Value("${SEARCH_BASE_URL}")
+	private String SEARCH_BASE_URL;
+	@Value("${SEARCH_ITEM_DELETE_URL}")
+	private String SEARCH_ITEM_DELETE_URL;
+	@Value("${SEARCH_ITEM_IMPORT_URL}")
+	private String SEARCH_ITEM_IMPORT_URL;
+	@Value("${SEARCH_ITEM_UPDATE_URL}")
+	private String SEARCH_ITEM_UPDATE_URL;
 	
 	@Autowired
 	private TbItemMapper itemMapper;
@@ -171,6 +186,10 @@ public class ItemServiceImpl implements ItemService {
 		List<Long> list = StringUtils.stringToListLong(ids, ",");
 		criteria.andIdIn(list);
 		itemMapper.deleteByExample(tbItemExample);
+		//删除索引库中的item信息
+		String result = HttpClientUtil.doPost(SEARCH_BASE_URL + SEARCH_ITEM_DELETE_URL + ids);
+		TaotaoResult results = JsonUtils.jsonToPojo(result, TaotaoResult.class);
+		logger.debug(results.toString());
 		return TaotaoResult.ok();
 	}
 
@@ -190,6 +209,9 @@ public class ItemServiceImpl implements ItemService {
 			logger.debug("------------更新数据库item信息---------------");
 			itemMapper.updateByPrimaryKey(item);
 		}
+		//删除索引库中的item信息
+		String result = HttpClientUtil.doPost(SEARCH_BASE_URL + SEARCH_ITEM_DELETE_URL + ids);
+		logger.debug(result);
 		return TaotaoResult.ok();
 	}
 
@@ -209,6 +231,9 @@ public class ItemServiceImpl implements ItemService {
 			logger.debug("------------更新数据库item信息---------------");
 			itemMapper.updateByPrimaryKey(item);
 		}
+		//添加索引库中的item信息
+		String result = HttpClientUtil.doPost(SEARCH_BASE_URL + SEARCH_ITEM_IMPORT_URL + ids);
+		logger.debug(result);
 		return TaotaoResult.ok();
 	}
 
@@ -250,6 +275,81 @@ public class ItemServiceImpl implements ItemService {
 		PageInfo<TbItem> pageInfo = new PageInfo<>(list);
 		result.setTotal(pageInfo.getTotal());
 		return result;
+	}
+	/**
+	 * 
+	 * <p>Title: updateItem</p>   
+	 * <p>Description: TODO(更新商品信息)   
+	 * @param item
+	 * @param desc
+	 * @param itemParams
+	 * @return
+	 * @throws Exception   
+	 * @see com.taotao.service.ItemService#updateItem(com.taotao.pojo.TbItem, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public TaotaoResult updateItem(TbItem item, String desc, String itemParams) throws Exception {
+		item.setUpdated(new Date());
+		item.setStatus((byte) 1);
+		//更新到数据库
+		itemMapper.updateByPrimaryKey(item);
+		//添加商品描述信息
+		TaotaoResult result = updateItemDesc(item.getId(), desc);
+		if (result.getStatus() != 200) {
+			throw new Exception();
+		}
+		//添加规格参数
+		result = updateItemParamItem(item.getId(), itemParams);
+		if (result.getStatus() != 200) {
+			throw new Exception();
+		}
+		//删除索引库中的item信息
+		String results = HttpClientUtil.doPost(SEARCH_BASE_URL + SEARCH_ITEM_UPDATE_URL + item.getId());
+		result = JsonUtils.jsonToPojo(results, TaotaoResult.class);
+		if (result.getStatus() != 200) {
+			logger.debug(result.toString());
+		}
+		return TaotaoResult.ok();
+	}
+	/**
+	 * 
+	 * @Title: updateItemParamItem   
+	 * @Description: TODO(更新商品信息)   
+	 * @param: @param id
+	 * @param: @param itemParams
+	 * @param: @return      
+	 * @return: TaotaoResult      
+	 * @throws
+	 */
+	private TaotaoResult updateItemParamItem(Long id, String itemParams) {
+		TbItemParamItem itemParamItem = new TbItemParamItem();
+		TbItemParamItemExample temParamItemExample = new TbItemParamItemExample();
+		com.taotao.pojo.TbItemParamItemExample.Criteria criteria = temParamItemExample.createCriteria();
+		criteria.andItemIdEqualTo(id);
+		itemParamItem.setItemId(id);
+		itemParamItem.setParamData(itemParams);
+		itemParamItem.setUpdated(new Date());
+		//数据更新进入数据库
+		itemParamItemMapper.updateByExampleWithBLOBs(itemParamItem, temParamItemExample);
+		return TaotaoResult.ok();
+	}
+	/**
+	 * 
+	 * @Title: updateItemDesc   
+	 * @Description: TODO(更新商品信息)   
+	 * @param: @param id
+	 * @param: @param desc
+	 * @param: @return      
+	 * @return: TaotaoResult      
+	 * @throws
+	 */
+	private TaotaoResult updateItemDesc(Long id, String desc) {
+		TbItemDesc itemDesc = new TbItemDesc();
+		itemDesc.setItemId(id);
+		itemDesc.setItemDesc(desc);
+		itemDesc.setUpdated(new Date());
+		itemDescMapper.updateByPrimaryKeyWithBLOBs(itemDesc);
+		return TaotaoResult.ok();
 	}
 
 }

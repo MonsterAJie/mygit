@@ -25,7 +25,14 @@ public class UserServiceImpl implements UserService {
 	@Value("${SSO_PAGE_LOGIN}")
 	public String SSO_PAGE_LOGIN;
 	
-	
+	/**
+	 *
+	 * <p>Title: getUserByToken</p>   
+	 * <p>Description: </p>   
+	 * @param token
+	 * @return   
+	 * @see com.taotao.portal.service.UserService#getUserByToken(java.lang.String)
+	 */
 	@Override
 	public TbUser getUserByToken(String token) {
 		try {
