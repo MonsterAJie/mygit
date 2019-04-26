@@ -1,0 +1,29 @@
+[mssql]
+host = 127.0.0.1:3306
+user = root
+pwd = 123456
+dbname = serviceLogs
+
+[tomcatFileVar]
+filecount = 1
+
+fileTop0 = H:\项目源码\apache-tomcat-7.0.93\logs\localhost_access_log.
+fileEnd0 = .txt
+readType = r
+encode = utf-8
+
+fileTop1 = H:\项目源码\apache-tomcat-7.0.93\logs\localhost_access_log1.
+fileEnd1 = .txt
+
+[sql]
+tomcatSql1 = insert into logs(`log_context`, `access_ip`, `access_country`, `access_city`, `access_county`, `access_pid`, `isp`, `access_type`, `access_status`, `access_date`, `access_time`, `log_type`) values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 'tomcat')
+nginxSql = insert into logs(`log_context`, `access_ip`, `access_country`, `access_city`, `access_county`, `access_pid`, `isp`, `access_type`, `access_status`, `access_date`, `access_time`, `log_type`) values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 'nginx')
+
+[manager]
+tomcatFlag = 1
+nginxFlag = 0
+
+[nginxFileVar]
+nginxpath = H:\项目源码\access.log
+
+
