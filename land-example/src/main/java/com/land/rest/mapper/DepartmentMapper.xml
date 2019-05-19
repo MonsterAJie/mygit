@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.land.rest.mapper.DepartmentMapper" >
+  <resultMap id="BaseResultMap" type="com.land.rest.model.Department" >
+    <id column="dept_id" property="deptId" jdbcType="INTEGER" />
+    <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+    <result column="established" property="established" jdbcType="DATE" />
+    <result column="emp_count" property="empCount" jdbcType="INTEGER" />
+    <result column="co_id" property="coId" jdbcType="INTEGER" />
+    <result column="make_date" property="makeDate" jdbcType="DATE" />
+    <result column="make_by" property="makeBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="DATE" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="spare_1" property="spare1" jdbcType="VARCHAR" />
+    <result column="spare_2" property="spare2" jdbcType="VARCHAR" />
+    <result column="spare_3" property="spare3" jdbcType="VARCHAR" />
+    <result column="spare_4" property="spare4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultPOJOMap" type="com.land.rest.pojo.DeptResult" >
+    <result column="co_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="dept_id" property="deptId" jdbcType="INTEGER" />
+    <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+    <result column="established" property="established" jdbcType="DATE" />
+    <result column="emp_count" property="empCount" jdbcType="INTEGER" />
+    <result column="co_id" property="coId" jdbcType="INTEGER" />
+    <result column="make_date" property="makeDate" jdbcType="DATE" />
+    <result column="make_by" property="makeBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="DATE" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="spare_1" property="spare1" jdbcType="VARCHAR" />
+    <result column="spare_2" property="spare2" jdbcType="VARCHAR" />
+    <result column="spare_3" property="spare3" jdbcType="VARCHAR" />
+    <result column="spare_4" property="spare4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    dept_id, dept_name, established, emp_count, co_id, make_date, make_by, update_date, 
+    update_by, spare_1, spare_2, spare_3, spare_4
+  </sql>
+  <sql id="Base_Dept_Column_List" >
+    dept_id, dept_name, dt.established, emp_count, dt.co_id, dt.make_date, dt.make_by, dt.update_date, 
+    dt.update_by
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.land.rest.model.DepartmentExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from department
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <!-- 选择每个公司的部门人数满足要求的部门信息 -->
+  <select id="getDeptListInfoByParm" resultMap="BaseResultPOJOMap" parameterType="com.land.rest.pojo.SelectDeptParm" >
+    SELECT co.co_name, <include refid="Base_Dept_Column_List" />
+	FROM company co, department dt
+		WHERE co.co_id = dt.co_id
+			GROUP BY co.co_name, dt.dept_name HAVING dt.emp_count &gt;= #{countMin,jdbcType=INTEGER}
+			<if test="countMax != null" >
+				and dt.emp_count &lt; #{countMax,jdbcType=INTEGER}
+			</if>
+			ORDER BY co_name
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where dept_id = #{deptId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from department
+    where dept_id = #{deptId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.land.rest.model.DepartmentExample" >
+    delete from department
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.land.rest.model.Department" >
+    insert into department (dept_id, dept_name, established, 
+      emp_count, co_id, make_date, 
+      make_by, update_date, update_by, 
+      spare_1, spare_2, spare_3, 
+      spare_4)
+    values (#{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR}, #{established,jdbcType=DATE}, 
+      #{empCount,jdbcType=INTEGER}, #{coId,jdbcType=INTEGER}, #{makeDate,jdbcType=DATE}, 
+      #{makeBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR}, 
+      #{spare1,jdbcType=VARCHAR}, #{spare2,jdbcType=VARCHAR}, #{spare3,jdbcType=VARCHAR}, 
+      #{spare4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.land.rest.model.Department" >
+    insert into department
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="deptId != null" >
+        dept_id,
+      </if>
+      <if test="deptName != null" >
+        dept_name,
+      </if>
+      <if test="established != null" >
+        established,
+      </if>
+      <if test="empCount != null" >
+        emp_count,
+      </if>
+      <if test="coId != null" >
+        co_id,
+      </if>
+      <if test="makeDate != null" >
+        make_date,
+      </if>
+      <if test="makeBy != null" >
+        make_by,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="spare1 != null" >
+        spare_1,
+      </if>
+      <if test="spare2 != null" >
+        spare_2,
+      </if>
+      <if test="spare3 != null" >
+        spare_3,
+      </if>
+      <if test="spare4 != null" >
+        spare_4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="deptId != null" >
+        #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="deptName != null" >
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="established != null" >
+        #{established,jdbcType=DATE},
+      </if>
+      <if test="empCount != null" >
+        #{empCount,jdbcType=INTEGER},
+      </if>
+      <if test="coId != null" >
+        #{coId,jdbcType=INTEGER},
+      </if>
+      <if test="makeDate != null" >
+        #{makeDate,jdbcType=DATE},
+      </if>
+      <if test="makeBy != null" >
+        #{makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="spare1 != null" >
+        #{spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="spare2 != null" >
+        #{spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="spare3 != null" >
+        #{spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="spare4 != null" >
+        #{spare4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.land.rest.model.DepartmentExample" resultType="java.lang.Integer" >
+    select count(*) from department
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update department
+    <set >
+      <if test="record.deptId != null" >
+        dept_id = #{record.deptId,jdbcType=INTEGER},
+      </if>
+      <if test="record.deptName != null" >
+        dept_name = #{record.deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.established != null" >
+        established = #{record.established,jdbcType=DATE},
+      </if>
+      <if test="record.empCount != null" >
+        emp_count = #{record.empCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.coId != null" >
+        co_id = #{record.coId,jdbcType=INTEGER},
+      </if>
+      <if test="record.makeDate != null" >
+        make_date = #{record.makeDate,jdbcType=DATE},
+      </if>
+      <if test="record.makeBy != null" >
+        make_by = #{record.makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null" >
+        update_date = #{record.updateDate,jdbcType=DATE},
+      </if>
+      <if test="record.updateBy != null" >
+        update_by = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare1 != null" >
+        spare_1 = #{record.spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare2 != null" >
+        spare_2 = #{record.spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare3 != null" >
+        spare_3 = #{record.spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare4 != null" >
+        spare_4 = #{record.spare4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update department
+    set dept_id = #{record.deptId,jdbcType=INTEGER},
+      dept_name = #{record.deptName,jdbcType=VARCHAR},
+      established = #{record.established,jdbcType=DATE},
+      emp_count = #{record.empCount,jdbcType=INTEGER},
+      co_id = #{record.coId,jdbcType=INTEGER},
+      make_date = #{record.makeDate,jdbcType=DATE},
+      make_by = #{record.makeBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=DATE},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      spare_1 = #{record.spare1,jdbcType=VARCHAR},
+      spare_2 = #{record.spare2,jdbcType=VARCHAR},
+      spare_3 = #{record.spare3,jdbcType=VARCHAR},
+      spare_4 = #{record.spare4,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.land.rest.model.Department" >
+    update department
+    <set >
+      <if test="deptName != null" >
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="established != null" >
+        established = #{established,jdbcType=DATE},
+      </if>
+      <if test="empCount != null" >
+        emp_count = #{empCount,jdbcType=INTEGER},
+      </if>
+      <if test="coId != null" >
+        co_id = #{coId,jdbcType=INTEGER},
+      </if>
+      <if test="makeDate != null" >
+        make_date = #{makeDate,jdbcType=DATE},
+      </if>
+      <if test="makeBy != null" >
+        make_by = #{makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="spare1 != null" >
+        spare_1 = #{spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="spare2 != null" >
+        spare_2 = #{spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="spare3 != null" >
+        spare_3 = #{spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="spare4 != null" >
+        spare_4 = #{spare4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dept_id = #{deptId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.land.rest.model.Department" >
+    update department
+    set dept_name = #{deptName,jdbcType=VARCHAR},
+      established = #{established,jdbcType=DATE},
+      emp_count = #{empCount,jdbcType=INTEGER},
+      co_id = #{coId,jdbcType=INTEGER},
+      make_date = #{makeDate,jdbcType=DATE},
+      make_by = #{makeBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=DATE},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      spare_1 = #{spare1,jdbcType=VARCHAR},
+      spare_2 = #{spare2,jdbcType=VARCHAR},
+      spare_3 = #{spare3,jdbcType=VARCHAR},
+      spare_4 = #{spare4,jdbcType=VARCHAR}
+    where dept_id = #{deptId,jdbcType=INTEGER}
+  </update>
+</mapper>
