@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.land.rest.mapper.CompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.land.rest.model.Company" >
+    <id column="co_id" property="coId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="corporation_nature" property="corporationNature" jdbcType="VARCHAR" />
+    <result column="co_name" property="coName" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="web" property="web" jdbcType="VARCHAR" />
+    <result column="established" property="established" jdbcType="DATE" />
+    <result column="make_date" property="makeDate" jdbcType="DATE" />
+    <result column="make_by" property="makeBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="DATE" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="spare_1" property="spare1" jdbcType="VARCHAR" />
+    <result column="spare_2" property="spare2" jdbcType="VARCHAR" />
+    <result column="spare_3" property="spare3" jdbcType="VARCHAR" />
+    <result column="spare_4" property="spare4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.land.rest.model.Company" extends="BaseResultMap" >
+    <result column="co_profile" property="coProfile" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    co_id, parent_id, corporation_nature, co_name, tel, addr, web, established, make_date, 
+    make_by, update_date, update_by, spare_1, spare_2, spare_3, spare_4
+  </sql>
+  <sql id="Blob_Column_List" >
+    co_profile
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.land.rest.model.CompanyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.land.rest.model.CompanyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from company
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where co_id = #{coId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from company
+    where co_id = #{coId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.land.rest.model.CompanyExample" >
+    delete from company
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.land.rest.model.Company" >
+    insert into company (co_id, parent_id, corporation_nature, 
+      co_name, tel, addr, 
+      web, established, make_date, 
+      make_by, update_date, update_by, 
+      spare_1, spare_2, spare_3, 
+      spare_4, co_profile)
+    values (#{coId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{corporationNature,jdbcType=VARCHAR}, 
+      #{coName,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, 
+      #{web,jdbcType=VARCHAR}, #{established,jdbcType=DATE}, #{makeDate,jdbcType=DATE}, 
+      #{makeBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR}, 
+      #{spare1,jdbcType=VARCHAR}, #{spare2,jdbcType=VARCHAR}, #{spare3,jdbcType=VARCHAR}, 
+      #{spare4,jdbcType=VARCHAR}, #{coProfile,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.land.rest.model.Company" >
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="coId != null" >
+        co_id,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="corporationNature != null" >
+        corporation_nature,
+      </if>
+      <if test="coName != null" >
+        co_name,
+      </if>
+      <if test="tel != null" >
+        tel,
+      </if>
+      <if test="addr != null" >
+        addr,
+      </if>
+      <if test="web != null" >
+        web,
+      </if>
+      <if test="established != null" >
+        established,
+      </if>
+      <if test="makeDate != null" >
+        make_date,
+      </if>
+      <if test="makeBy != null" >
+        make_by,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="spare1 != null" >
+        spare_1,
+      </if>
+      <if test="spare2 != null" >
+        spare_2,
+      </if>
+      <if test="spare3 != null" >
+        spare_3,
+      </if>
+      <if test="spare4 != null" >
+        spare_4,
+      </if>
+      <if test="coProfile != null" >
+        co_profile,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="coId != null" >
+        #{coId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="corporationNature != null" >
+        #{corporationNature,jdbcType=VARCHAR},
+      </if>
+      <if test="coName != null" >
+        #{coName,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="web != null" >
+        #{web,jdbcType=VARCHAR},
+      </if>
+      <if test="established != null" >
+        #{established,jdbcType=DATE},
+      </if>
+      <if test="makeDate != null" >
+        #{makeDate,jdbcType=DATE},
+      </if>
+      <if test="makeBy != null" >
+        #{makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="spare1 != null" >
+        #{spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="spare2 != null" >
+        #{spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="spare3 != null" >
+        #{spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="spare4 != null" >
+        #{spare4,jdbcType=VARCHAR},
+      </if>
+      <if test="coProfile != null" >
+        #{coProfile,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.land.rest.model.CompanyExample" resultType="java.lang.Integer" >
+    select count(*) from company
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update company
+    <set >
+      <if test="record.coId != null" >
+        co_id = #{record.coId,jdbcType=INTEGER},
+      </if>
+      <if test="record.parentId != null" >
+        parent_id = #{record.parentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.corporationNature != null" >
+        corporation_nature = #{record.corporationNature,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coName != null" >
+        co_name = #{record.coName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tel != null" >
+        tel = #{record.tel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addr != null" >
+        addr = #{record.addr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.web != null" >
+        web = #{record.web,jdbcType=VARCHAR},
+      </if>
+      <if test="record.established != null" >
+        established = #{record.established,jdbcType=DATE},
+      </if>
+      <if test="record.makeDate != null" >
+        make_date = #{record.makeDate,jdbcType=DATE},
+      </if>
+      <if test="record.makeBy != null" >
+        make_by = #{record.makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null" >
+        update_date = #{record.updateDate,jdbcType=DATE},
+      </if>
+      <if test="record.updateBy != null" >
+        update_by = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare1 != null" >
+        spare_1 = #{record.spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare2 != null" >
+        spare_2 = #{record.spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare3 != null" >
+        spare_3 = #{record.spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spare4 != null" >
+        spare_4 = #{record.spare4,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coProfile != null" >
+        co_profile = #{record.coProfile,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update company
+    set co_id = #{record.coId,jdbcType=INTEGER},
+      parent_id = #{record.parentId,jdbcType=INTEGER},
+      corporation_nature = #{record.corporationNature,jdbcType=VARCHAR},
+      co_name = #{record.coName,jdbcType=VARCHAR},
+      tel = #{record.tel,jdbcType=VARCHAR},
+      addr = #{record.addr,jdbcType=VARCHAR},
+      web = #{record.web,jdbcType=VARCHAR},
+      established = #{record.established,jdbcType=DATE},
+      make_date = #{record.makeDate,jdbcType=DATE},
+      make_by = #{record.makeBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=DATE},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      spare_1 = #{record.spare1,jdbcType=VARCHAR},
+      spare_2 = #{record.spare2,jdbcType=VARCHAR},
+      spare_3 = #{record.spare3,jdbcType=VARCHAR},
+      spare_4 = #{record.spare4,jdbcType=VARCHAR},
+      co_profile = #{record.coProfile,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update company
+    set co_id = #{record.coId,jdbcType=INTEGER},
+      parent_id = #{record.parentId,jdbcType=INTEGER},
+      corporation_nature = #{record.corporationNature,jdbcType=VARCHAR},
+      co_name = #{record.coName,jdbcType=VARCHAR},
+      tel = #{record.tel,jdbcType=VARCHAR},
+      addr = #{record.addr,jdbcType=VARCHAR},
+      web = #{record.web,jdbcType=VARCHAR},
+      established = #{record.established,jdbcType=DATE},
+      make_date = #{record.makeDate,jdbcType=DATE},
+      make_by = #{record.makeBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=DATE},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      spare_1 = #{record.spare1,jdbcType=VARCHAR},
+      spare_2 = #{record.spare2,jdbcType=VARCHAR},
+      spare_3 = #{record.spare3,jdbcType=VARCHAR},
+      spare_4 = #{record.spare4,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.land.rest.model.Company" >
+    update company
+    <set >
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="corporationNature != null" >
+        corporation_nature = #{corporationNature,jdbcType=VARCHAR},
+      </if>
+      <if test="coName != null" >
+        co_name = #{coName,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="web != null" >
+        web = #{web,jdbcType=VARCHAR},
+      </if>
+      <if test="established != null" >
+        established = #{established,jdbcType=DATE},
+      </if>
+      <if test="makeDate != null" >
+        make_date = #{makeDate,jdbcType=DATE},
+      </if>
+      <if test="makeBy != null" >
+        make_by = #{makeBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="spare1 != null" >
+        spare_1 = #{spare1,jdbcType=VARCHAR},
+      </if>
+      <if test="spare2 != null" >
+        spare_2 = #{spare2,jdbcType=VARCHAR},
+      </if>
+      <if test="spare3 != null" >
+        spare_3 = #{spare3,jdbcType=VARCHAR},
+      </if>
+      <if test="spare4 != null" >
+        spare_4 = #{spare4,jdbcType=VARCHAR},
+      </if>
+      <if test="coProfile != null" >
+        co_profile = #{coProfile,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where co_id = #{coId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.land.rest.model.Company" >
+    update company
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      corporation_nature = #{corporationNature,jdbcType=VARCHAR},
+      co_name = #{coName,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      web = #{web,jdbcType=VARCHAR},
+      established = #{established,jdbcType=DATE},
+      make_date = #{makeDate,jdbcType=DATE},
+      make_by = #{makeBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=DATE},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      spare_1 = #{spare1,jdbcType=VARCHAR},
+      spare_2 = #{spare2,jdbcType=VARCHAR},
+      spare_3 = #{spare3,jdbcType=VARCHAR},
+      spare_4 = #{spare4,jdbcType=VARCHAR},
+      co_profile = #{coProfile,jdbcType=LONGVARCHAR}
+    where co_id = #{coId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.land.rest.model.Company" >
+    update company
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      corporation_nature = #{corporationNature,jdbcType=VARCHAR},
+      co_name = #{coName,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      web = #{web,jdbcType=VARCHAR},
+      established = #{established,jdbcType=DATE},
+      make_date = #{makeDate,jdbcType=DATE},
+      make_by = #{makeBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=DATE},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      spare_1 = #{spare1,jdbcType=VARCHAR},
+      spare_2 = #{spare2,jdbcType=VARCHAR},
+      spare_3 = #{spare3,jdbcType=VARCHAR},
+      spare_4 = #{spare4,jdbcType=VARCHAR}
+    where co_id = #{coId,jdbcType=INTEGER}
+  </update>
+</mapper>
