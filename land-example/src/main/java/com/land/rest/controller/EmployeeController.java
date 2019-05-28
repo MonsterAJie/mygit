@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.land.rest.model.Employee;
 import com.land.rest.pojo.EmpInfo;
 import com.land.rest.pojo.ResultResponse;
-import com.land.rest.pojo.SelectEmpParm;
+import com.land.rest.pojo.EmpParm;
 import com.land.rest.service.EmployeeService;
 
 
@@ -36,20 +35,12 @@ public class EmployeeController {
 	
 	@GetMapping("{id}")
 	public ResultResponse getInfo(@PathVariable int id) {
-		try {
-			return emploeeService.getInfo(id);
-		} catch (Exception e) {
-			return ResultResponse.fail(e.getMessage());
-		}
+		return emploeeService.getInfo(id);
 	}
 	
 	@GetMapping("/all")
 	public ResultResponse getAllInfo() {
-		try {
-			return emploeeService.getAllInfo();
-		} catch (Exception e) {
-			return ResultResponse.fail(e.getMessage());
-		}
+		return emploeeService.getAllInfo();
 	}
 	
 	/**
@@ -62,8 +53,8 @@ public class EmployeeController {
 	 * @throws
 	 */
 	@GetMapping
-	public ResultResponse getInfoByPram(@RequestBody SelectEmpParm pram) {
-		return emploeeService.getListInfoByParmOne(pram);
+	public ResultResponse getInfoByPram(@RequestBody EmpParm pram) {
+		return emploeeService.getListInfoByParm(pram);
 	}
 	
 	@PostMapping

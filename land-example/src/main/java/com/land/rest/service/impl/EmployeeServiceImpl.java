@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.land.rest.constant.Constant;
-import com.land.rest.dao.JedisClient;
 import com.land.rest.mapper.EmployeeInfoMapper;
 import com.land.rest.mapper.EmployeeMapper;
 import com.land.rest.model.Employee;
@@ -17,8 +15,9 @@ import com.land.rest.model.EmployeeInfoExample;
 import com.land.rest.pojo.EmpInfo;
 import com.land.rest.pojo.EmpResult;
 import com.land.rest.pojo.ResultResponse;
-import com.land.rest.pojo.SelectEmpParm;
+import com.land.rest.pojo.EmpParm;
 import com.land.rest.service.EmployeeService;
+import com.land.rest.utils.IDUtils;
 
 /**
  * 
@@ -38,12 +37,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Autowired
 	private EmployeeInfoMapper employeeInfoMapper;
-	
-	@Autowired
-	private JedisClient jedisClient;
 
 	public ResultResponse getInfo(int id) {
+		int i = 2 / 0;
 		Employee employee = employeeMapper.selectByPrimaryKey(id);
+		if (null == employee) {
+			return ResultResponse.fail("雇员信息不存在！");
+		}
 		EmployeeInfo employeeInfo = employeeInfoMapper.selectByPrimaryKey(id);
 		EmpInfo empInfo = new EmpInfo();
 		empInfo.setEmp(employee);
@@ -52,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	public ResultResponse insertInfo(EmpInfo o) {
-		setId(o);
+		IDUtils.setEmpId(o);
 		employeeMapper.insert(o.getEmp());
 		employeeInfoMapper.insert(o.getEmpinfo());
 		return ResultResponse.success(o);
@@ -103,22 +103,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return ResultResponse.success(list);
 	}
 
-	public ResultResponse getListInfoByParmOne(SelectEmpParm parm) {
-		List<EmpResult> list = employeeMapper.getListInfoByParmOne(parm);
-		return ResultResponse.success(list);
-	}
-
-	public ResultResponse getListInfoByParm(SelectEmpParm parm) {
+	public ResultResponse getListInfoByParm(EmpParm parm) {
 		List<EmpResult> list = employeeMapper.getListInfoByParmOne(parm);
 		return ResultResponse.success(list);
 	}
 	
-	private void setId(EmpInfo o) {
-		if (null == o) {
-			return;
-		}
-		long l = jedisClient.incr(Constant.REDIS_EMP_ID_KEY);
-		o.getEmp().setEmpId((int) l);
-		o.getEmpinfo().setEmpId((int) l);
-	}
 }

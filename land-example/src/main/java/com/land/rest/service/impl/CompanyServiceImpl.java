@@ -1,20 +1,13 @@
 package com.land.rest.service.impl;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.land.rest.constant.Constant;
-import com.land.rest.dao.JedisClient;
 import com.land.rest.mapper.CompanyMapper;
 import com.land.rest.model.Company;
 import com.land.rest.model.CompanyExample;
-import com.land.rest.model.CompanyExample.Criteria;
-import com.land.rest.pojo.EmpInfo;
 import com.land.rest.pojo.ResultResponse;
-import com.land.rest.pojo.SelectCoParm;
 import com.land.rest.service.CompanyService;
 import com.land.rest.utils.IDUtils;
 
@@ -34,13 +27,11 @@ public class CompanyServiceImpl implements CompanyService{
 	@Autowired
 	private CompanyMapper companyMapper;
 	
-	@Autowired
-	private JedisClient jedisClient;
 	/**
 	 * 
 	 * <p>Title: getInfo</p>   
 	 * <p>Description: </p>   
-	 * @param id
+	 * @param id 公司id
 	 * @return   
 	 * @see com.land.rest.service.BaseService#getInfo(int)
 	 */
@@ -49,11 +40,7 @@ public class CompanyServiceImpl implements CompanyService{
 	}
 
 	public ResultResponse insertInfo(Company company) {
-		if (null == company) {
-			return ResultResponse.fail("数据为空！");
-		} else {
-			setId(company);
-		}
+		IDUtils.setComId(company);
 		companyMapper.insert(company);
 		return ResultResponse.success(company);
 	}
@@ -79,18 +66,4 @@ public class CompanyServiceImpl implements CompanyService{
 		return ResultResponse.success(companyList);
 	}
 
-	public ResultResponse getListInfoByParm(SelectCoParm pram) {
-		CompanyExample example = new CompanyExample();
-		Criteria criteria = example.createCriteria();
-		if (null != pram.getCorporationNature()) {
-			criteria.andCorporationNatureEqualTo(pram.getCorporationNature());
-		}
-		List<Company> list = companyMapper.selectByExampleWithBLOBs(example);
-		return ResultResponse.success(list);
-	}
-	
-	private void setId(Company o) {
-		long l = jedisClient.incr(Constant.REDIS_COM_ID_KEY);
-		o.setCoId((int) l);
-	}
 }

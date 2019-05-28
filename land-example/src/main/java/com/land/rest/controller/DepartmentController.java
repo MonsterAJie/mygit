@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.land.rest.model.Department;
 import com.land.rest.pojo.ResultResponse;
-import com.land.rest.pojo.SelectDeptParm;
+import com.land.rest.pojo.DeptParm;
 import com.land.rest.service.DepartmentService;
 
 /**
@@ -56,8 +56,8 @@ public class DepartmentController {
 	 * @throws
 	 */
 	@GetMapping
-	public ResultResponse getInfoByPram(@RequestBody SelectDeptParm pram) {
-		return departmentService.getDeptListInfoByParm(pram);
+	public ResultResponse getInfoByPram(@RequestBody DeptParm pram) {
+		return departmentService.getListInfoByParm(pram);
 	}
 	
 	@PostMapping
