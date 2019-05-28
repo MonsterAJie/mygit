@@ -8,6 +8,8 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 	
+	<!-- id工具类 -->
+	<bean id="iDUtils" class="com.land.rest.utils.IDUtils" init-method="init"></bean>
 	<!-- 连接池配置 -->
 	<!-- 加载配置文件 -->
 	<context:property-placeholder location="classpath:resource/redis.properties"  ignore-unresolvable="true"/>

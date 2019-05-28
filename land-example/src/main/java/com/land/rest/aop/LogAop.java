@@ -3,15 +3,10 @@ package com.land.rest.aop;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 
@@ -37,9 +32,6 @@ public class LogAop {
 	 * @throws
 	 */
 	public void before(JoinPoint joinPoint) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
-		HttpSession session = request.getSession();
 		String methodName = joinPoint.getSignature().getName();
 		try {
 			logger.info("=====Entering   " + methodName + "()=====");
@@ -62,9 +54,6 @@ public class LogAop {
 	 * @throws
 	 */
 	public void after(JoinPoint joinPoint) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
-		HttpSession session = request.getSession();
 		String methodName = joinPoint.getSignature().getName();
 		try {
 			logger.info("=====leaving   " + methodName + "()=====");
@@ -86,9 +75,6 @@ public class LogAop {
 	 * @throws
 	 */
 	public void afterThrowing(JoinPoint joinPoint, Throwable e) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
-		HttpSession session = request.getSession();
 		String params = "";
 		Object[] args = joinPoint.getArgs();
 		if (args != null && args.length > 0) {
@@ -111,7 +97,6 @@ public class LogAop {
 					}
 				}
 			}
- 
 		}
 		String methodName = joinPoint.getSignature().getName();
 		try {

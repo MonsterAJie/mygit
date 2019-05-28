@@ -3,6 +3,7 @@ package com.land.rest.exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.land.rest.enums.ResultCode;
 import com.land.rest.pojo.ResultResponse;
 
 /**
@@ -17,69 +18,42 @@ import com.land.rest.pojo.ResultResponse;
  */
 public class BusinessException extends RuntimeException {
 	
-	private static final long serialVersionUID = -8384360434572237992L;
+    private String returnMsg;
+    /**
+     * returnCode 表示HOP内部错误码
+     */
+    private String returnCode = "999999";
+    private String errorMsg;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BusinessException.class);
-
-    protected String errorCode;
-    
-    protected String[] errorMessageArguments;
-    
-    protected ResultResponse resultResponse;
-
-    protected BusinessException() {
-        this("");
+    /**
+     * errorCode 表示后台系统返回错误码
+     */
+    private String errorCode = "999999";
+    //...省略N个重载的构造函数
+    public BusinessException(String returnMsg, String returnCode, String errorMsg, String errorCode) {
+        super(returnMsg);
+        this.returnMsg = returnMsg;
+        this.returnCode = returnCode;
+        this.errorMsg = errorMsg;
+        this.errorCode = errorCode;
     }
 
-    public BusinessException(String message) {
-        super(message);
-        this.errorCode = "fail";
-        this.errorMessageArguments = new String[0];
+    public BusinessException(String returnMsg, String returnCode, String errorMsg, String errorCode, Throwable e) {
+        super(returnMsg, e);
+        this.returnMsg = returnMsg;
+        this.returnCode = returnCode;
+        this.errorMsg = errorMsg;
+        this.errorCode = errorCode;
     }
 
-    public BusinessException(String message, Throwable cause) {
-        super(message, cause);
-        this.errorCode = "fail";
-        this.errorMessageArguments = new String[0];
+    public BusinessException(ResultCode resultCode, Throwable e) {
+        super(resultCode.getMessage(), e);
+        this.errorMsg = resultCode.getMessage();
+        this.errorCode = resultCode.getCode();
     }
 
-    public static BusinessException withErrorCode(String errorCode) {
-        BusinessException businessException = new BusinessException();
-        businessException.errorCode = errorCode;
-        return businessException;
-    }
-
-    public String getErrorCode() {
-        return this.errorCode;
-    }
-
-    public String[] getErrorMessageArguments() {
-        return this.errorMessageArguments;
-    }
-
-    public BusinessException withErrorMessageArguments(String... errorMessageArguments) {
-        if(errorMessageArguments != null) {
-            this.errorMessageArguments = errorMessageArguments;
-        }
-
-        return this;
-    }
-
-    public ResultResponse response() {
-        if (this.resultResponse != null) {
-            return this.resultResponse;
-        } else {
-//        	ResultResponse result = new ResultResponse();
-        	this.resultResponse.widthCode(this.getErrorCode());
-//            this.resultResponse = result.widthCode(this.getErrorCode());
-            if (this.getErrorMessageArguments() != null && this.getErrorMessageArguments().length > 0) {
-                try {
-//                    this.resultResponse.setMsg(MessageFormat.format(this.resultResponse.getData() ,this.getErrorMessageArguments()));
-                } catch (Exception var2) {
-                    LOGGER.error(var2.getMessage());
-                }
-            }
-            return this.resultResponse;
-        }
+    public BusinessException(ResultCode resultCode) {
+        this.errorMsg = resultCode.getMessage();
+        this.errorCode = resultCode.getCode();
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.land.rest.model.Company;
 import com.land.rest.pojo.ResultResponse;
-import com.land.rest.pojo.SelectCoParm;
 import com.land.rest.service.CompanyService;
 
 /**
@@ -48,20 +47,6 @@ public class CompanyController {
 		} catch (Exception e) {
 			return ResultResponse.fail(e.getMessage());
 		}
-	}
-	
-	/**
-	 * 
-	 * @Title: getInfoByPram   
-	 * @Description: TODO(得到满足pram参数的数据结果集)   
-	 * @param: @param pram 
-	 * @param: @return      
-	 * @return: ResultResponse      
-	 * @throws
-	 */
-	@GetMapping
-	public ResultResponse getInfoByPram(@RequestBody SelectCoParm pram) {
-		return companyService.getListInfoByParm(pram);
 	}
 	
 	@PostMapping

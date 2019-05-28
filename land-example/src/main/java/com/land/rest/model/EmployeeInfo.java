@@ -2,6 +2,16 @@ package com.land.rest.model;
 
 import java.util.Date;
 
+/**
+ * 
+ * @ClassName:  EmployeeInfo   
+ * @Description:TODO(这里用一句话描述这个类的作用)   
+ * @author: AJie
+ * @date:   2019年5月27日 下午5:44:25   
+ *     
+ * @Copyright: 2019 https://github.com/MonsterAJie/mygit
+ *
+ */
 public class EmployeeInfo {
     private Integer empId;
 
