@@ -4,7 +4,7 @@ Created on 2019年4月25日
 @author: Administrator
 '''
 # -*- coding: utf-8 -*-  
-# python 3.5
+# python 3.6
  
 import sys
 # import pymssql
